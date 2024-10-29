@@ -10,7 +10,8 @@ namespace ProjetoReforcoEscopo1.Dominio.Proposta.Infra
             return await Task.FromResult(Maybe.From(new Cliente
             (
                 Cpf: cpf,
-                Telefone: "5551986532127",
+                Ddd: "51",
+                Telefone: "986532127",
                 Email: "exemplo@email.com",
                 UfNascimento: "RS",
                 DataNascimento: DateTime.Parse("1960-01-05T16:00:00.220Z"),

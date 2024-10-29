@@ -4,5 +4,6 @@
     {
         public string Sigla { get; set; } = string.Empty;
         public decimal ValorMaximo { get; set; }
+        public bool AssinaturaHibrida { get; set; }
     }
 }

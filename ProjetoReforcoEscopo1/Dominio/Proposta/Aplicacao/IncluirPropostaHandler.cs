@@ -10,7 +10,7 @@ public class IncluirPropostaHandler
     private readonly ConveniadaRepositorio _conveniadaRepositorio;
 
     public IncluirPropostaHandler(
-        PropostaRepositorio propostaRepositorio, 
+        PropostaRepositorio propostaRepositorio,
         ClienteRepositorio clienteRepositorio,
         ConveniadaRepositorio conveniadaRepositorio)
     {
@@ -26,7 +26,8 @@ public class IncluirPropostaHandler
         TODO: ajustar dominios anemicos
          */
 
-        // Verificar importancia/ordem dos IF's
+        // TODO: verificar importancia/ordem dos IF's
+        // TODO: melhorar quantidade de IF's
         var cliente = await _clienteRepositorio.BuscarDadosCliente(command.Cpf);
         if (cliente.HasNoValue)
             return Result.Failure<Proposta>("Cliente não encontrado");
@@ -51,8 +52,7 @@ public class IncluirPropostaHandler
 
         var estadoCliente = conveniada.Value.Estados.FirstOrDefault(s => s.Sigla.Equals(cliente.Value.UfNascimento));
         if (estadoCliente is null)
-            return Result.Failure<Proposta>("Estado não encontrado");
-
+            return Result.Failure<Proposta>("Conveniada não encontrada nesse estado");
 
 
         // TODO: botar num strategy e adicionar os erros em uma lista de erros
@@ -61,12 +61,12 @@ public class IncluirPropostaHandler
         {
             if (command.NumeroParcelas >= 60)
             {
-                Result.Failure<Proposta>("Parcelas maior que 60x");
+                return Result.Failure<Proposta>("Parcelas maior que 60x");
             }
 
             if (command.Valor >= 500000)
             {
-                Result.Failure<Proposta>("Valor maior que 500mil");
+                return Result.Failure<Proposta>("Valor maior que 500mil");
             }
         }
 
@@ -74,12 +74,12 @@ public class IncluirPropostaHandler
         {
             if (command.NumeroParcelas >= 80)
             {
-                Result.Failure<Proposta>("Parcelas maior que 80x");
+                return Result.Failure<Proposta>("Parcelas maior que 80x");
             }
 
             if (command.Valor >= 700000)
             {
-                Result.Failure<Proposta>("Valor maior que 700mil");
+                return Result.Failure<Proposta>("Valor maior que 700mil");
             }
         }
 
@@ -87,18 +87,18 @@ public class IncluirPropostaHandler
         {
             if (command.NumeroParcelas >= 100)
             {
-                Result.Failure<Proposta>("Parcelas maior que 100x");
+                return Result.Failure<Proposta>("Parcelas maior que 100x");
             }
 
             if (command.Valor >= 200000)
             {
-                Result.Failure<Proposta>("Valor maior que 200mil");
+                return Result.Failure<Proposta>("Valor maior que 200mil");
             }
         }
         #endregion
 
 
-
+        // TODO: botar num strategy e melhorar logica com meses
         #region validação quantidade de parcelas com idade máxima
         DateTime dataAtual = DateTime.Today;
         int idade = dataAtual.Year - cliente.Value.DataNascimento.Year;
@@ -112,22 +112,103 @@ public class IncluirPropostaHandler
         #endregion
 
 
+        // TODO: botar num simple factory - AssinaturaFactory
+        #region validação tipo assinatura
 
-        // ------REGRAS DE NEGOCIO:
-        // var tipoAssinatura = assinaturaFactory.buscarTipoAssinatura(cliente.Telefone, cliente.UfNascimento, estados);
-        // var paramento = new Pagamento(valor, numParcelas);
+        var tipoAssinatura = "assinatura eletrônica";
+        var dddUfNascimento = ObterDDD(cliente.Value.UfNascimento);
+        if (dddUfNascimento.Equals(cliente.Value.Ddd))
+        {
+            tipoAssinatura = "assinatura eletrônica";
+        }
+        else if (estadoCliente.AssinaturaHibrida)
+        {
+            tipoAssinatura = "assinatura eletrônica";
+        }
+        else if (!dddUfNascimento.Equals(cliente.Value.Ddd))
+        {
+            tipoAssinatura = "assinatura eletrônica";
+        }
+
+        #endregion
 
 
+        #region incluir proposta
+        var parceiro = "Loja Consig Mais";
 
-        // ------EXECUCAO:
-        // var parceiro = "Loja Consig Mais";
-        // var proposta = new Proposta(parceiro, tipoOperacao, tipoAssinatura, cliente, pagamento, conveniada);
-        // propostaFactory.incluirProposta(proposta)
+        // TODO: talvez um factory method para realizar outras formas de pagamento
+        var pagamento = new Pagamento(command.Valor, command.NumeroParcelas);
 
+        // TODO: factory method - PropostaFactory
+        var proposta = new Proposta(parceiro, command.TipoOperacao, tipoAssinatura, cliente.Value, pagamento, conveniada.Value);
+        await _propostaRepositorio.IncluirProposta(proposta);
+        #endregion
 
+        // TODO: retornar um dto de response
+        return Result.Success(proposta);
+    }
 
-
-
-        return Result.Success(new Proposta());
+    // TODO: ver um lugar melhor pra esse metodo
+    private static string ObterDDD(string uf)
+    {
+        switch (uf.ToUpper())
+        {
+            case "AC":
+                return "68";
+            case "AL":
+                return "82";
+            case "AM":
+                return "92";
+            case "AP":
+                return "96";
+            case "BA":
+                return "71";
+            case "CE":
+                return "85";
+            case "DF":
+                return "61";
+            case "ES":
+                return "27";
+            case "GO":
+                return "62";
+            case "MA":
+                return "98";
+            case "MG":
+                return "31";
+            case "MS":
+                return "67";
+            case "MT":
+                return "65";
+            case "PA":
+                return "91";
+            case "PB":
+                return "83";
+            case "PE":
+                return "81";
+            case "PI":
+                return "86";
+            case "PR":
+                return "41";
+            case "RJ":
+                return "21";
+            case "RN":
+                return "84";
+            case "RO":
+                return "69";
+            case "RR":
+                return "95";
+            case "RS":
+                return "51";
+            case "SC":
+                return "47";
+            case "SE":
+                return "79";
+            case "SP":
+                return "11";
+            case "TO":
+                return "63";
+            default:
+                return "UF inválida";
+        }
     }
 }

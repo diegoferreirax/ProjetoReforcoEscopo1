@@ -3,6 +3,7 @@
     public record Cliente
     (
         string Cpf,
+        string Ddd,
         string Telefone,
         string Email,
         string UfNascimento,
