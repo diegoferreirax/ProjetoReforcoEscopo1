@@ -13,9 +13,9 @@
 
         // TODO: encapsular
         string Rendimento1Nome,
-        string Rendimento1Valor,
+        decimal Rendimento1Valor,
 
         string Rendimento2Nome,
-        string Rendimento2Valor
+        decimal Rendimento2Valor
     );
 }

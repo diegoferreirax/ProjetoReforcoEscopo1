@@ -8,29 +8,32 @@ namespace ProjetoReforcoEscopo1.Dominio.Proposta.Aplicacao
         public decimal Valor { get; }
         public int NumeroParcelas { get; }
         public string TipoOperacao { get; }
+        public string Conveniada { get; }
 
-        private IncluirPropostaCommand(string cpf, decimal valor, int numeroParcelas, string tipoOperacao)  
+        private IncluirPropostaCommand(string cpf, decimal valor, int numeroParcelas, string tipoOperacao, string conveniada)  
         {
             Cpf = cpf;
             Valor = valor;
             NumeroParcelas = numeroParcelas;
             TipoOperacao = tipoOperacao;
+            Conveniada = conveniada;
         }
 
         // tinha pensado em passar um model nos parametros ao inves das props
-        public static ResultAggregate<IncluirPropostaCommand> Criar(string cpf, decimal valor, int numeroParcelas, string tipoOperacao)
+        public static ResultAggregate<IncluirPropostaCommand> Criar(string cpf, decimal valor, int numeroParcelas, string tipoOperacao, string conveniada)
         {
             var result = ResultAggregate.Combine(
-                ResultAggregate.FailureIf(string.IsNullOrEmpty(cpf), ResultAggregate.PropriedadeDeErro, "CPF é obrigatório"),
-                ResultAggregate.FailureIf(valor <= 0, ResultAggregate.PropriedadeDeErro, "Valor inválido"),
-                ResultAggregate.FailureIf(numeroParcelas <= 0, ResultAggregate.PropriedadeDeErro, "Parcelas inválidas"),
-                ResultAggregate.FailureIf(string.IsNullOrEmpty(tipoOperacao), ResultAggregate.PropriedadeDeErro, "Tipo operação é obrigatório")
+                ResultAggregate.FailureIf(string.IsNullOrEmpty(cpf), "IncluirPropostaCommand", "CPF é obrigatório"),
+                ResultAggregate.FailureIf(valor <= 0, "IncluirPropostaCommand", "Valor inválido"),
+                ResultAggregate.FailureIf(numeroParcelas <= 0, "IncluirPropostaCommand", "Parcelas inválidas"),
+                ResultAggregate.FailureIf(string.IsNullOrEmpty(tipoOperacao), "IncluirPropostaCommand", "Tipo operação é obrigatório"),
+                ResultAggregate.FailureIf(string.IsNullOrEmpty(conveniada), "IncluirPropostaCommand", "Conveniada é obrigatória")
                 );
 
             if (result.IsFailure)
                 return result.ConvertFailure<IncluirPropostaCommand>();
 
-            return new IncluirPropostaCommand (cpf, valor, numeroParcelas, tipoOperacao);
+            return new IncluirPropostaCommand (cpf, valor, numeroParcelas, tipoOperacao, conveniada);
         }
     }
 }

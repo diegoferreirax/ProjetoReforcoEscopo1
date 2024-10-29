@@ -5,11 +5,11 @@ using ProjetoReforcoEscopo1.Dominio.Proposta.Aplicacao;
 namespace ProjetoReforcoEscopo1.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/{controller}")]
+[Route("api/v1/proposta")]
 public class PropostaController : ControllerBase
 {
-    [HttpPost(Name = "IncluirProposta")]
-    public async Task<IActionResult> Post(
+    [HttpPost]
+    public async Task<IActionResult> IncluirProposta(
         [FromBody] IncluirPropostaModel input,
         [FromServices] IncluirPropostaHandler handler,
         CancellationToken cancellationToken)
@@ -18,7 +18,8 @@ public class PropostaController : ControllerBase
             input.Cpf,
             input.Valor,
             input.NumeroParcelas,
-            input.TipoOperacao
+            input.TipoOperacao,
+            input.Conveniada
         );
 
         var result = await handler.Handle(command.Value, cancellationToken);

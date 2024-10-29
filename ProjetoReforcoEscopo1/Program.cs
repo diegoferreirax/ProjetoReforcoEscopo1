@@ -1,15 +1,20 @@
+using ProjetoReforcoEscopo1.Dominio.Proposta.Aplicacao;
+using ProjetoReforcoEscopo1.Dominio.Proposta.Infra;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ClienteRepositorio>();
+builder.Services.AddScoped<PropostaRepositorio>();
+builder.Services.AddScoped<ConveniadaRepositorio>();
+
+builder.Services.AddScoped<IncluirPropostaHandler>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
