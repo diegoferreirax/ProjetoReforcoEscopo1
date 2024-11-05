@@ -24,6 +24,7 @@ public class IncluirPropostaHandler
         /*
         TODO: configurar unitOfWork pro repositorio
         TODO: ajustar dominios anemicos
+        TODO: fazer motor de regras no banco
          */
 
         // TODO: verificar importancia/ordem dos IF's
@@ -36,6 +37,8 @@ public class IncluirPropostaHandler
         if (propostasExistentes)
             return Result.Failure<Proposta>("Cliente já possui propostas em aberto");
 
+        // TODO: talvez botar essa validação do cliente em um lugar só
+        // TODO: criar classes de validação estilo da aula 
         var cpfBloqueado = await _clienteRepositorio.VerificarCpfBloquadoCliente(cliente.Value.Cpf);
         if (cpfBloqueado)
             return Result.Failure<Proposta>("Cliente com CPF bloqueado");
@@ -149,6 +152,7 @@ public class IncluirPropostaHandler
     }
 
     // TODO: ver um lugar melhor pra esse metodo
+    // pode colocar em uma tabela ou em uma lista estatica, sem mt misterio pra resolver
     private static string ObterDDD(string uf)
     {
         switch (uf.ToUpper())

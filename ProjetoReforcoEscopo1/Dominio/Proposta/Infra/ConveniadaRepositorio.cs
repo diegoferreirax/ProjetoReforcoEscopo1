@@ -2,6 +2,7 @@
 
 namespace ProjetoReforcoEscopo1.Dominio.Proposta.Infra
 {
+    // TODO: ver possibilidades de usar o dapper
     public class ConveniadaRepositorio
     {
         public async Task<Maybe<Conveniada>> BuscarConveniada(string codigo)

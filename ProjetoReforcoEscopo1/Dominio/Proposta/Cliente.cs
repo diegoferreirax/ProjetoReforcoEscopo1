@@ -1,5 +1,7 @@
 ﻿namespace ProjetoReforcoEscopo1.Dominio.Proposta
 {
+    // cliente seria um ValueObject ou criariamos uma entidade ?
+    // proposta é uma entidade por nesse caso ser nosso dominio, o restante pode ser ValueObject
     public record Cliente
     (
         string Cpf,

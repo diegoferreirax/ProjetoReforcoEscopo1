@@ -2,6 +2,7 @@
 
 namespace ProjetoReforcoEscopo1.Dominio.Proposta.Infra
 {
+    // TODO: ver possibilidades de usar o dapper
     public class ClienteRepositorio
     {
         public async Task<Maybe<Cliente>> BuscarDadosCliente(string cpf)

@@ -1,5 +1,6 @@
 ﻿namespace ProjetoReforcoEscopo1.Dominio.Proposta.Infra
 {
+    // TODO: ver possibilidades de usar o dapper
     public class PropostaRepositorio
     {
         public async Task IncluirProposta(Proposta proposta)
